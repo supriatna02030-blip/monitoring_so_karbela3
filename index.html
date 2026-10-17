@@ -3,43 +3,73 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>K930 KARBELA 3 - MANUAL + FOTO LEMBARAN SO</title>
+<title>K930 KARBELA 3 - BOTTOM NAV RAPIH</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <script>tailwind.config={darkMode:'class'}</script>
 </head>
-<body class="max-w-[480px] mx-auto bg-[#F7F7F7] dark:bg-[#121212] min-h-screen pb-[90px]">
-<div class="bg-[#D40000] text-white p-5 rounded-b-[28px] sticky top-0 z-30">
+<body class="max-w-[480px] mx-auto bg-[#F7F7F7] dark:bg-black min-h-screen">
+<!-- HEADER MERAH - GAK NUTUPIN LAGI -->
+<div class="bg-[#D40000] text-white p-5 rounded-b-[28px]">
 <div class="flex justify-between items-center">
-<div><h1 class="font-black text-[22px]">K930 KARBELA 3</h1><p class="text-[10px] opacity-80">MANUAL TOTAL + FOTO LEMBARAN SO</p></div>
-<button onclick="toggleDark()" class="bg-white/20 w-10 h-10 rounded-full"><i class="fa-solid fa-moon"></i></button>
+<div><h1 class="font-black text-[22px]">K930 KARBELA 3</h1><p class="text-[10px] opacity-80">K930 - RAPIH NO TUTUP</p></div>
+<button onclick="toggleDark()" class="bg-white/20 w-10 h-10 rounded-full"><i id="iconDark" class="fa-solid fa-moon"></i></button>
 </div>
+<div id="viewRAK">
 <div class="grid grid-cols-2 gap-2 mt-4">
 <input id="nama" placeholder="Nama Staff PIC SO" class="rounded-xl p-3 text-black text-xs outline-none">
 <input id="tanggal" type="date" class="rounded-xl p-3 text-black text-xs">
 </div>
 <div class="grid grid-cols-3 gap-2 mt-3 text-[10px] font-bold text-center">
-<div class="bg-white/20 rounded-xl p-2"><p id="done">0/115</p>RAK</div>
-<div class="bg-white/20 rounded-xl p-2"><p id="top5">0 PLU</p>TOP5</div>
-<div class="bg-white/20 rounded-xl p-2"><p id="totalMinus">Rp 0</p>TOTAL</div>
+<div class="bg-white/20 rounded-xl p-3"><p id="done" class="text-[14px]">0/104</p>RAK</div>
+<div class="bg-white/20 rounded-xl p-3"><p id="top5" class="text-[14px]">0 PLU</p>TOP5</div>
+<div class="bg-white/20 rounded-xl p-3"><p id="totalMinus" class="text-[14px]">Rp 0</p>TOTAL</div>
+</div>
+<div class="mt-3 bg-white/10 rounded-xl flex items-center px-3"><i class="fa-solid fa-search text-xs opacity-60"></i><input id="search" oninput="render()" placeholder="Cari rak AT1 AY0..." class="bg-transparent w-full p-3 outline-none text-xs placeholder:text-white/60"></div>
 </div>
 </div>
 
-<div class="p-3"><div class="bg-white dark:bg-zinc-800 border rounded-xl flex items-center px-3"><i class="fa-solid fa-search text-xs text-gray-400"></i><input id="search" oninput="render()" placeholder="Cari AT1 AY0..." class="bg-transparent w-full p-3 outline-none text-xs dark:text-white"></div></div>
-
-<div id="list" class="p-3 space-y-3"></div>
-
-<div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white/90 dark:bg-zinc-900/90 backdrop-blur border-t p-3 z-40 flex justify-center">
-<button onclick="openMenu()" class="bg-[#D40000] text-white px-8 py-3 rounded-full font-black text-xs shadow-lg"><i class="fa-solid fa-bars mr-2"></i>MENU K930</button>
+<!-- KONTEN 1: LIST RAK -->
+<div id="contentRAK" class="p-3 space-y-3 pb-[100px]">
+<div id="list"></div>
 </div>
 
-<div id="menuPopup" class="fixed inset-0 bg-black/60 z-50 hidden flex items-end justify-center" onclick="closeMenu()">
-<div class="bg-white dark:bg-zinc-900 w-full max-w-[480px] rounded-t-[28px] p-5 space-y-3" onclick="event.stopPropagation()">
-<div class="w-12 h-1.5 bg-gray-300 rounded-full mx-auto"></div>
+<!-- KONTEN 2: PERBANDINGAN - MENU BARU RAPIH -->
+<div id="contentBANDING" class="hidden p-3 space-y-3 pb-[100px]">
+<div class="bg-white dark:bg-zinc-900 rounded-2xl border dark:border-zinc-800 p-4">
+<h3 class="font-black text-[14px] dark:text-white"><i class="fa-solid fa-code-compare mr-2 text-[#D40000]"></i>PERBANDINGAN SO</h3>
+<div class="grid grid-cols-2 gap-3 mt-3">
+<div><p class="text-[10px] font-bold opacity-60">BULAN INI</p><input id="bulanIni" type="month" onchange="renderBanding()" class="w-full bg-gray-100 dark:bg-zinc-800 rounded-xl p-3 text-[13px] font-bold dark:text-white outline-none mt-1"></div>
+<div><p class="text-[10px] font-bold opacity-60">BULAN SELANJUTNYA / BANDING</p><input id="bulanNext" type="month" onchange="renderBanding()" class="w-full bg-gray-100 dark:bg-zinc-800 rounded-xl p-3 text-[13px] font-bold dark:text-white outline-none mt-1"></div>
+</div>
+<div id="hasilBanding" class="mt-4 space-y-3"></div>
+</div>
+<div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-2xl p-3 text-[11px]">
+<b class="text-yellow-700 dark:text-yellow-300">Cara pakai:</b> Pilih bulan ini (Oktober) dan bulan banding (September). Nanti keliatan rak mana yang naik / turun minusnya.
+</div>
+</div>
+
+<!-- BOTTOM NAVIGATION RAPIH - KAYAK APLIKASI TOKO -->
+<div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white dark:bg-zinc-900 border-t dark:border-zinc-800 flex justify-around items-center py-2 px-2 z-50 pb-[max(8px,env(safe-area-inset-bottom))]">
+<button onclick="switchTab('RAK')" id="tabRAK" class="flex flex-col items-center gap-1 py-2 px-6 rounded-2xl bg-[#D40000] text-white">
+<i class="fa-solid fa-boxes-stacked text-[18px]"></i><span class="text-[9px] font-black">RAK</span>
+</button>
+<button onclick="switchTab('BANDING')" id="tabBANDING" class="flex flex-col items-center gap-1 py-2 px-6 rounded-2xl text-gray-400 dark:text-zinc-500">
+<i class="fa-solid fa-chart-column text-[18px]"></i><span class="text-[9px] font-black">BANDING</span>
+</button>
+<button onclick="openMenu()" class="flex flex-col items-center gap-1 py-2 px-6 rounded-2xl text-gray-400 dark:text-zinc-500">
+<i class="fa-solid fa-bars text-[18px]"></i><span class="text-[9px] font-black">MENU</span>
+</button>
+</div>
+
+<!-- POPUP MENU KECIL -->
+<div id="menuPopup" class="fixed inset-0 bg-black/60 z-[60] hidden flex items-end justify-center p-3" onclick="closeMenu()">
+<div class="bg-white dark:bg-zinc-900 w-full max-w-[480px] rounded-[28px] p-5 space-y-3 mb-[80px]" onclick="event.stopPropagation()">
+<div class="w-12 h-1.5 bg-gray-300 dark:bg-zinc-700 rounded-full mx-auto"></div>
 <h3 class="font-black text-center dark:text-white">MENU K930</h3>
-<button onclick="exportWA();closeMenu()" class="w-full bg-[#25D366] text-white py-4 rounded-xl font-bold text-sm"><i class="fa-brands fa-whatsapp mr-2"></i>EXPORT WA</button>
-<button onclick="save();closeMenu()" class="w-full bg-[#D40000] text-white py-4 rounded-xl font-bold text-sm">SIMPAN</button>
-<button onclick="closeMenu()" class="w-full bg-black text-white py-3 rounded-xl font-bold text-xs">TUTUP</button>
+<button onclick="exportWA();closeMenu()" class="w-full bg-[#25D366] text-white py-4 rounded-2xl font-bold text-sm shadow"><i class="fa-brands fa-whatsapp mr-2"></i>EXPORT LAPORAN WA</button>
+<button onclick="save();closeMenu()" class="w-full bg-[#D40000] text-white py-4 rounded-2xl font-bold text-sm shadow">SIMPAN DATA</button>
+<button onclick="closeMenu()" class="w-full bg-gray-100 dark:bg-zinc-800 dark:text-white py-3 rounded-2xl font-bold text-xs">TUTUP</button>
 </div>
 </div>
 
@@ -47,13 +77,19 @@
 const ITEMS = ["AT1","AY0","AY1","AY2","AY3","AY4","AY5","AY6","AY7","AY8","AY9","AZ1","BA1","BA2","CB1","CF1","CH1","CR1","CR2","CR3","CR4","CX1","CX2","DB1","DD1","DJ1","DJ2","DJ3","DJ4","DJ5","DJ6","EB1","EC1","ED1","EE1","EF1","EJ1","EP1","EP2","EP3","EP4","EP5","FP1","FP2","FP3","FP4","FP5","FP6","FP7","FP8","HB1","HB2","HB3","HB4","HB5","HB6","HB7","HC1","HD1","HG1","HH1","HI1","HM1","HN1","HO1","HS1","HT1","JA1","JC1","KI1","KJ1","KL1","KO1","KS1","MC1","MD1","ME1","MI1","MI2","MI3","NA1","NF1","NP1","OA1","OB1","OB2","OC1","Q31","Q32","Q41","Q51","Q52","Q53","Q54","Q55","QA1","S11","S12","S13","S14","S15","S16","S17","S18"];
 let bulanAktif = new Date().toISOString().slice(0,7);
 let dataAll = JSON.parse(localStorage.getItem('K930_KARBELA3_ALL') || '{}');
-
 function getDataBulan(b){ if(!dataAll[b]) dataAll[b]={}; return dataAll[b]; }
 function getDataAktif(){ return getDataBulan(bulanAktif); }
+function switchTab(t){
+ document.getElementById('contentRAK').classList.add('hidden');
+ document.getElementById('contentBANDING').classList.add('hidden');
+ document.getElementById('tabRAK').className="flex flex-col items-center gap-1 py-2 px-6 rounded-2xl text-gray-400 dark:text-zinc-500";
+ document.getElementById('tabBANDING').className="flex flex-col items-center gap-1 py-2 px-6 rounded-2xl text-gray-400 dark:text-zinc-500";
+ if(t==='RAK'){ document.getElementById('contentRAK').classList.remove('hidden'); document.getElementById('tabRAK').className="flex flex-col items-center gap-1 py-2 px-6 rounded-2xl bg-[#D40000] text-white"; bulanAktif=document.getElementById('bulanIni').value; render(); }
+ if(t==='BANDING'){ document.getElementById('contentBANDING').classList.remove('hidden'); document.getElementById('tabBANDING').className="flex flex-col items-center gap-1 py-2 px-6 rounded-2xl bg-[#D40000] text-white"; renderBanding(); }
+}
 function openMenu(){ document.getElementById('menuPopup').classList.remove('hidden'); }
 function closeMenu(){ document.getElementById('menuPopup').classList.add('hidden'); }
-function toggleDark(){ document.documentElement.classList.toggle('dark'); localStorage.setItem('K930_DARK', document.documentElement.classList.contains('dark')); }
-
+function toggleDark(){ const isDark=document.documentElement.classList.toggle('dark'); localStorage.setItem('K930_DARK', isDark); document.getElementById('iconDark').className=isDark?'fa-solid fa-sun':'fa-solid fa-moon'; }
 function render(){
  const q=document.getElementById('search').value.toLowerCase();
  const list=document.getElementById('list'); list.innerHTML='';
@@ -62,28 +98,38 @@ function render(){
   const d=data[code]||{checked:false,rak:'',nominal:'',items:[],foto:''};
   let htmlItems='';
   if(d.checked){
-   htmlItems=`<div class="p-2 bg-gray-50 dark:bg-zinc-800/50 space-y-2 rounded-xl">`;
+   htmlItems=`<div class="space-y-2 mt-2">`;
    (d.items||[]).forEach((it,i)=>{
     htmlItems+=`<div class="bg-white dark:bg-zinc-800 border dark:border-zinc-700 rounded-xl p-2 space-y-1">
-      <div class="grid grid-cols-12 gap-1"><input value="${it.plu||''}" oninput="uItem('${code}',${i},'plu',this.value)" placeholder="PLU" class="col-span-3 border rounded p-2 text-[12px] dark:bg-zinc-900 dark:text-white outline-none"><input value="${it.nama||''}" oninput="uItem('${code}',${i},'nama',this.value)" placeholder="Nama Barang" class="col-span-7 border rounded p-2 text-[12px] dark:bg-zinc-900 dark:text-white outline-none"><button onclick="dItem('${code}',${i})" class="col-span-2 bg-red-100 text-red-600 rounded"><i class="fa-solid fa-trash text-[11px]"></i></button></div>
-      <div class="grid grid-cols-2 gap-1"><input value="${it.selisih||''}" oninput="uItem('${code}',${i},'selisih',this.value)" type="number" inputmode="numeric" placeholder="Selisih Rp" class="border rounded p-2 text-[12px] dark:bg-zinc-900 dark:text-white outline-none"><input value="${it.qty||''}" oninput="uItem('${code}',${i},'qty',this.value)" type="number" placeholder="Qty" class="border rounded p-2 text-[12px] dark:bg-zinc-900 dark:text-white outline-none"></div></div>`;
+      <div class="grid grid-cols-12 gap-1"><input value="${it.plu||''}" oninput="uItem('${code}',${i},'plu',this.value)" placeholder="PLU" class="col-span-3 border rounded-lg p-2 text-[12px] dark:bg-black dark:text-white outline-none"><input value="${it.nama||''}" oninput="uItem('${code}',${i},'nama',this.value)" placeholder="Nama" class="col-span-7 border rounded-lg p-2 text-[12px] dark:bg-black dark:text-white outline-none"><button onclick="dItem('${code}',${i})" class="col-span-2 bg-red-100 text-red-600 rounded-lg"><i class="fa-solid fa-trash text-[11px]"></i></button></div>
+      <div class="grid grid-cols-2 gap-1"><input value="${it.selisih||''}" oninput="uItem('${code}',${i},'selisih',this.value)" type="number" placeholder="Selisih Rp" class="border rounded-lg p-2 text-[12px] dark:bg-black dark:text-white outline-none"><input value="${it.qty||''}" oninput="uItem('${code}',${i},'qty',this.value)" type="number" placeholder="Qty" class="border rounded-lg p-2 text-[12px] dark:bg-black dark:text-white outline-none"></div></div>`;
    });
    if((d.items||[]).length<5) htmlItems+=`<button onclick="aItem('${code}')" class="w-full py-3 border-2 border-dashed border-red-300 text-red-600 rounded-xl text-[11px] font-black">+ TAMBAH PLU (${(d.items||[]).length}/5)</button>`;
-   
-   htmlItems+=`</div>`;
-  }
-  const el=document.createElement('div'); el.className=`bg-white dark:bg-zinc-800 rounded-2xl border dark:border-zinc-700 overflow-hidden ${d.checked?'border-[#D40000] shadow':''}`;
-  el.innerHTML=`<label class="flex justify-between items-center p-3"><div class="flex items-center gap-2"><input type="checkbox" ${d.checked?'checked':''} onchange="tog('${code}')" class="w-5 h-5 accent-[#D40000]"><div class="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-black ${d.checked?'bg-[#D40000] text-white':'bg-gray-100 dark:bg-zinc-700 dark:text-white'}">${code}</div><b class="text-[13px] dark:text-white">${code}</b>${d.foto?'<i class="fa-solid fa-file-image text-blue-500 text-[12px]"></i>':''}</div><span class="text-[10px] font-bold dark:text-gray-300">${d.checked?`Rp${Number(d.nominal||0).toLocaleString('id-ID')}`:'BELUM'}</span></label>
-  <div class="${d.checked?'':'hidden'} border-t dark:border-zinc-700 p-3 space-y-3 bg-[#FFF8F8] dark:bg-zinc-900">
-    <div class="grid grid-cols-2 gap-2"><input value="${d.rak}" oninput="set('${code}','rak',this.value.toUpperCase())" placeholder="No Rak" class="border rounded-lg p-2.5 text-[13px] dark:bg-zinc-800 dark:text-white outline-none"><input value="${d.nominal}" oninput="set('${code}','nominal',this.value)" type="number" inputmode="numeric" placeholder="Total Rp Minus (MANUAL)" class="border rounded-lg p-2.5 text-[13px] dark:bg-zinc-800 dark:text-white outline-none font-bold"></div>
-    ${htmlItems}
-    <div class="bg-white dark:bg-zinc-800 border dark:border-zinc-700 rounded-xl p-2">
+   htmlItems+=`<div class="bg-white dark:bg-zinc-800 border dark:border-zinc-700 rounded-xl p-2">
      <p class="text-[10px] font-black mb-1"><i class="fa-solid fa-file-lines mr-1"></i>FOTO LEMBARAN SO ${code}:</p>
-     ${d.foto ? `<img src="${d.foto}" class="w-full h-48 object-contain bg-gray-100 dark:bg-zinc-900 rounded-lg mb-2 border"><div class="flex gap-2"><button onclick="hapusFoto('${code}')" class="flex-1 bg-red-100 text-red-600 py-2 rounded-lg text-[10px] font-bold">HAPUS FOTO</button><label class="flex-1 bg-blue-100 text-blue-600 text-center py-2 rounded-lg text-[10px] font-bold cursor-pointer">GANTI FOTO<input type="file" accept="image/*" capture="environment" class="hidden" onchange="uploadFoto('${code}',this)"></label></div>` : `<label class="w-full border-2 border-dashed border-blue-300 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/10 rounded-xl py-6 flex flex-col items-center justify-center cursor-pointer"><i class="fa-solid fa-file-image text-xl text-blue-500"></i><span class="text-[11px] font-bold mt-1 dark:text-white">FOTO LEMBARAN SO</span><span class="text-[9px] text-gray-500">Foto kertas lembaran SO asli</span><input type="file" accept="image/*" capture="environment" class="hidden" onchange="uploadFoto('${code}',this)"></label>`}
-   </div>
-  </div>`;
+     ${d.foto ? `<img src="${d.foto}" class="w-full h-40 object-contain bg-gray-100 dark:bg-black rounded-lg mb-2"><div class="flex gap-2"><button onclick="hapusFoto('${code}')" class="flex-1 bg-red-100 text-red-600 py-2 rounded-lg text-[10px] font-bold">HAPUS</button><label class="flex-1 bg-blue-100 text-blue-600 text-center py-2 rounded-lg text-[10px] font-bold cursor-pointer">GANTI<input type="file" accept="image/*" capture="environment" class="hidden" onchange="uploadFoto('${code}',this)"></label></div>` : `<label class="w-full border-2 border-dashed border-blue-300 rounded-xl py-5 flex flex-col items-center justify-center cursor-pointer bg-blue-50 dark:bg-blue-900/10"><i class="fa-solid fa-file-image text-lg text-blue-500"></i><span class="text-[11px] font-bold mt-1 dark:text-white">FOTO LEMBARAN SO</span><input type="file" accept="image/*" capture="environment" class="hidden" onchange="uploadFoto('${code}',this)"></label>`}
+   </div></div>`;
+  }
+  const el=document.createElement('div'); el.className=`bg-white dark:bg-zinc-800 rounded-2xl border dark:border-zinc-700 overflow-hidden ${d.checked?'border-[#D40000]':''}`;
+  el.innerHTML=`<label class="flex justify-between items-center p-4"><div class="flex items-center gap-3"><input type="checkbox" ${d.checked?'checked':''} onchange="tog('${code}')" class="w-5 h-5 accent-[#D40000]"><div class="w-9 h-9 rounded-full flex items-center justify-center text-[11px] font-black ${d.checked?'bg-[#D40000] text-white':'bg-gray-100 dark:bg-zinc-700 dark:text-white'}">${code}</div><b class="text-[13px] dark:text-white">${code}</b>${d.foto?'<i class="fa-solid fa-file-image text-blue-500 text-[11px]"></i>':''}</div><span class="text-[10px] font-bold ${d.checked?'text-[#D40000]':'text-gray-400'}">${d.checked?`Rp${Number(d.nominal||0).toLocaleString('id-ID')}`:'BELUM'}</span></label><div class="${d.checked?'':'hidden'} border-t dark:border-zinc-700 p-3 space-y-3 bg-[#FFF8F8] dark:bg-black"><div class="grid grid-cols-2 gap-2"><input value="${d.rak}" oninput="set('${code}','rak',this.value.toUpperCase())" placeholder="No Rak" class="border rounded-xl p-3 text-[13px] dark:bg-zinc-900 dark:text-white outline-none"><input value="${d.nominal}" oninput="set('${code}','nominal',this.value)" type="number" placeholder="Total Rp (MANUAL)" class="border-2 border-red-200 rounded-xl p-3 text-[13px] font-black dark:bg-zinc-900 dark:text-white outline-none"></div>${htmlItems}</div>`;
   list.appendChild(el);
  }); upd();
+}
+function renderBanding(){
+ const b1=document.getElementById('bulanIni').value; const b2=document.getElementById('bulanNext').value;
+ const d1=getDataBulan(b1); const d2=getDataBulan(b2);
+ let t1=0,t2=0; Object.values(d1).forEach(v=>t1+=Number(v.nominal||0)); Object.values(d2).forEach(v=>t2+=Number(v.nominal||0));
+ const selisih=t1-t2;
+ let html=`<div class="grid grid-cols-2 gap-3"><div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl p-3"><p class="text-[10px] font-bold opacity-60">BULAN INI (${b1})</p><p class="font-black text-[16px] dark:text-white">Rp ${t1.toLocaleString('id-ID')}</p><p class="text-[10px]">${Object.keys(d1).length} Rak SO</p></div><div class="bg-gray-50 dark:bg-zinc-800 border dark:border-zinc-700 rounded-2xl p-3"><p class="text-[10px] font-bold opacity-60">BANDING (${b2})</p><p class="font-black text-[16px] dark:text-white">Rp ${t2.toLocaleString('id-ID')}</p><p class="text-[10px]">${Object.keys(d2).length} Rak SO</p></div></div>
+ <div class="bg-black dark:bg-white text-white dark:text-black rounded-2xl p-4 flex justify-between items-center"><span class="text-[11px] font-bold">SELISIH BANDING:</span><span class="font-black text-[16px] ${selisih>0?'text-red-400':'text-green-400'}">Rp ${selisih.toLocaleString('id-ID')} ${selisih>0?'🔺 Naik':'✅ Turun'}</span></div><div class="space-y-2 mt-2">`;
+ const allCodes=[...new Set([...Object.keys(d1),...Object.keys(d2)])].sort();
+ allCodes.forEach(code=>{
+  const v1=d1[code]?.nominal||0; const v2=d2[code]?.nominal||0; if(v1==0 && v2==0) return;
+  const diff=v1-v2;
+  html+=`<div class="bg-white dark:bg-zinc-800 border dark:border-zinc-700 rounded-xl p-3 flex justify-between items-center"><div><b class="text-[13px] dark:text-white">${code} ${d1[code]?.rak||d2[code]?.rak||''}</b><p class="text-[10px] opacity-60">Bulan ini: Rp${Number(v1).toLocaleString('id-ID')} | Banding: Rp${Number(v2).toLocaleString('id-ID')}</p></div><span class="font-black text-[11px] ${diff>0?'text-red-500':'text-green-500'}">${diff>0?'+':''}Rp${diff.toLocaleString('id-ID')}</span></div>`;
+ });
+ html+=`</div>`;
+ document.getElementById('hasilBanding').innerHTML=html;
 }
 function tog(c){ let d=getDataAktif(); if(!d[c]) d[c]={checked:false,rak:'',nominal:'',items:[],foto:''}; d[c].checked=!d[c].checked; if(!d[c].checked) delete d[c]; ls(); render(); }
 function set(c,k,v){ let d=getDataAktif(); if(!d[c]) d[c]={checked:true,rak:'',nominal:'',items:[],foto:''}; d[c][k]=v; ls(); upd(); }
@@ -92,15 +138,16 @@ function aItem(c){ let d=getDataAktif(); if(!d[c].items) d[c].items=[]; if(d[c].
 function dItem(c,i){ let d=getDataAktif(); d[c].items.splice(i,1); ls(); render(); }
 function uploadFoto(code,input){ const file=input.files[0]; if(!file) return; const reader=new FileReader(); reader.onload=e=>{ let d=getDataAktif(); const img=new Image(); img.src=e.target.result; img.onload=()=>{ const canvas=document.createElement('canvas'); const max=1000; let w=img.width,h=img.height; if(w>h){ if(w>max){ h*=max/w; w=max; } } else { if(h>max){ w*=max/h; h=max; } } canvas.width=w; canvas.height=h; canvas.getContext('2d').drawImage(img,0,0,w,h); d[code].foto=canvas.toDataURL('image/jpeg',0.6); ls(); render(); }; }; reader.readAsDataURL(file); }
 function hapusFoto(code){ let d=getDataAktif(); if(d[code]){ d[code].foto=''; ls(); render(); } }
-function ls(){ localStorage.setItem('K930_KARBELA3_ALL', JSON.stringify(dataAll)); }
+function ls(){ localStorage.setItem('K930_KARBELA3_ALL', JSON.stringify(dataAll)); localStorage.setItem('K930_BULAN', JSON.stringify({ini:document.getElementById('bulanIni').value,next:document.getElementById('bulanNext').value})); }
 function upd(){ let data=getDataAktif(); const done=Object.values(data).filter(v=>v.checked).length; let totalPLU=0,totalRp=0; Object.values(data).forEach(v=>{ totalPLU+=(v.items||[]).length; totalRp+=Number(v.nominal||0); }); document.getElementById('done').innerText=done+'/'+ITEMS.length; document.getElementById('top5').innerText=totalPLU+' PLU'; document.getElementById('totalMinus').innerText='Rp '+totalRp.toLocaleString('id-ID'); }
-function save(){ ls(); alert('Tersimpan!'); }
-function exportWA(){ const n=document.getElementById('nama').value||'STAFF'; const t=document.getElementById('tanggal').value; let txt=`*K930 KARBELA 3*%0ATgl: ${t} | Staff: ${n}%0A%0A`; const data=getDataAktif(); Object.entries(data).forEach(([code,v])=>{ txt+=`*${code} ${v.rak||''} Rp${Number(v.nominal||0).toLocaleString('id-ID')} ${v.foto?'📄':''}*%0A`; (v.items||[]).forEach((it,i)=>{ txt+=`${i+1}. ${it.plu||'-'} ${it.nama||'-'} Rp${Number(it.selisih||0).toLocaleString('id-ID')}%0A`; }); txt+=`%0A`; }); window.open(`https://wa.me/?text=${txt}`,'_blank'); }
+function save(){ ls(); alert('Tersimpan bro!'); }
+function exportWA(){ const n=document.getElementById('nama').value||'STAFF'; const t=document.getElementById('tanggal').value; const b=document.getElementById('bulanIni').value; let txt=`*K930 KARBELA 3*%0ATgl:${t} Staff:${n} Bulan:${b}%0A%0A`; const data=getDataAktif(); Object.entries(data).forEach(([code,v])=>{ txt+=`*${code} ${v.rak||''} Rp${Number(v.nominal||0).toLocaleString('id-ID')} ${v.foto?'📄':''}*%0A`; (v.items||[]).forEach((it,i)=>{ txt+=`${i+1}. ${it.plu||'-'} ${it.nama||'-'} Rp${Number(it.selisih||0).toLocaleString('id-ID')}%0A`; }); txt+=`%0A`; }); window.open(`https://wa.me/?text=${txt}`,'_blank'); }
 
-const now=new Date().toISOString().slice(0,7);
-bulanAktif=now;
+const now=new Date().toISOString().slice(0,7); const prev=new Date(); prev.setMonth(prev.getMonth()-1); const prevStr=prev.toISOString().slice(0,7);
+const savedBulan=JSON.parse(localStorage.getItem('K930_BULAN')||'null');
+document.getElementById('bulanIni').value=savedBulan?.ini||now; document.getElementById('bulanNext').value=savedBulan?.next||prevStr; bulanAktif=document.getElementById('bulanIni').value;
 document.getElementById('tanggal').valueAsDate=new Date();
-if(localStorage.getItem('K930_DARK')==='true') document.documentElement.classList.add('dark');
+if(localStorage.getItem('K930_DARK')==='true'){ document.documentElement.classList.add('dark'); document.getElementById('iconDark').className='fa-solid fa-sun'; }
 render();
 </script>
 </body>
