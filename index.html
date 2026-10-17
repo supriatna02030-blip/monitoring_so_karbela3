@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SO Rawan Hilang - KF33</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body{font-family:'Segoe UI',sans-serif;background:#F5F7FB}
+.check:checked + div{background:#D40000;border-color:#D40000;color:white}
+.check:checked + div .dot{opacity:1}
+</style>
+</head>
+<body class="max-w-[500px] mx-auto min-h-screen pb-24 bg-white">
+
+<!-- HEADER -->
+<div class="bg-[#D40000] text-white p-5 sticky top-0 z-50 rounded-b-[24px]">
+<div class="flex justify-between items-center">
+<div>
+<h1 class="font-black text-[20px] leading-none">CEKLIST SO</h1>
+<p class="text-[12px] mt-1 opacity-90">KF33 - RAWAN HILANG - 115 ITEM</p>
+</div>
+<div class="bg-white text-[#D40000] w-10 h-10 rounded-full flex items-center justify-center"><i class="fa-solid fa-boxes-stacked"></i></div>
+</div>
+
+<div class="grid grid-cols-2 gap-2 mt-4">
+<input id="nama" placeholder="Nama Staff" class="p-3 rounded-xl text-black text-sm outline-none">
+<select id="shift" class="p-3 rounded-xl text-black text-sm outline-none">
+<option value="PAGI">SHIFT PAGI</option>
+<option value="SIANG">SHIFT SIANG</option>
+<option value="MALAM">SHIFT MALAM</option>
+</select>
+</div>
+<input id="tanggal" type="date" class="w-full mt-2 p-3 rounded-xl text-black text-sm outline-none">
+
+<div class="flex gap-2 mt-4">
+<div class="flex-1 bg-black/20 rounded-xl flex items-center px-3"><i class="fa-solid fa-magnifying-glass text-sm opacity-70"></i><input id="search" onkeyup="render()" placeholder="Cari AT1, AY0, dll" class="bg-transparent w-full p-2 outline-none text-sm text-white placeholder:text-white/70"></div>
+<button onclick="resetAll()" class="bg-white text-[#D40000] px-4 rounded-xl text-xs font-bold">RESET</button>
+</div>
+
+<div class="flex justify-between mt-4 text-[11px] font-bold">
+<span id="progressText">0 / 115 DONE</span>
+<span id="persen">0%</span>
+</div>
+<div class="w-full h-2 bg-black/20 rounded-full mt-1 overflow-hidden"><div id="bar" class="h-full bg-white transition-all" style="width:0%"></div></div>
+</div>
+
+<!-- FILTER KATEGORI -->
+<div class="p-3 flex gap-2 overflow-x-auto sticky top-[1px] bg-white z-40 border-b">
+<button onclick="setFilter('ALL')" id="f-ALL" class="filter-btn bg-[#D40000] text-white px-4 py-2 rounded-full text-xs whitespace-nowrap font-bold">SEMUA</button>
+<button onclick="setFilter('AY')" id="f-AY" class="filter-btn bg-gray-100 px-4 py-2 rounded-full text-xs whitespace-nowrap">AY (10)</button>
+<button onclick="setFilter('DJ')" id="f-DJ" class="filter-btn bg-gray-100 px-4 py-2 rounded-full text-xs whitespace-nowrap">DJ (6)</button>
+<button onclick="setFilter('EP')" id="f-EP" class="filter-btn bg-gray-100 px-4 py-2 rounded-full text-xs whitespace-nowrap">EP (5)</button>
+<button onclick="setFilter('FP')" id="f-FP" class="filter-btn bg-gray-100 px-4 py-2 rounded-full text-xs whitespace-nowrap">FP (8)</button>
+<button onclick="setFilter('HB')" id="f-HB" class="filter-btn bg-gray-100 px-4 py-2 rounded-full text-xs whitespace-nowrap">HB (7)</button>
+<button onclick="setFilter('S')" id="f-S" class="filter-btn bg-gray-100 px-4 py-2 rounded-full text-xs whitespace-nowrap">S (8)</button>
+<button onclick="setFilter('LAIN')" id="f-LAIN" class="filter-btn bg-gray-100 px-4 py-2 rounded-full text-xs whitespace-nowrap">LAINNYA</button>
+</div>
+
+<!-- LIST -->
+<div id="list" class="p-3 space-y-2"></div>
+
+<!-- FLOATING ACTION -->
+<div class="fixed bottom-0 left-1/2 -translate-x-1/2 max-w-[500px] w-full bg-white border-t p-3 flex gap-2 z-50">
+<button onclick="exportWA()" class="flex-1 bg-[#25D366] text-white py-3 rounded-xl font-bold text-sm"><i class="fa-brands fa-whatsapp"></i> EXPORT WA</button>
+<button onclick="saveData()" class="flex-1 bg-[#D40000] text-white py-3 rounded-xl font-bold text-sm"><i class="fa-solid fa-floppy-disk"></i> SIMPAN</button>
+</div>
+
+<script>
+const ITEMS = [
+"AT1",
+"AY0","AY1","AY2","AY3","AY4","AY5","AY6","AY7","AY8","AY9",
+"AZ1","BA1","BA2","CB1","CF1","CH1","CR1","CR2","CR3","CR4","CX1","CX2","DB1","DD1",
+"DJ1","DJ2","DJ3","DJ4","DJ5","DJ6",
+"EB1","EC1","ED1","EE1","EF1","EJ1",
+"EP1","EP2","EP3","EP4","EP5",
+"FP1","FP2","FP3","FP4","FP5","FP6","FP7","FP8",
+"HB1","HB2","HB3","HB4","HB5","HB6","HB7",
+"HC1","HD1","HG1","HH1","HI1","HM1","HN1","HO1","HS1","HT1","JA1","JC1","KI1","KJ1","KL1","KO1","KS1","MC1","MD1","ME1","MI1","MI2","MI3","NA1","NF1","NP1","OA1","OB1","OB2","OC1","Q31","Q32","Q41","Q51","Q52","Q53","Q54","Q55","QA1",
+"S11","S12","S13","S14","S15","S16","S17","S18"
+];
+
+let currentFilter = 'ALL';
+let checked = JSON.parse(localStorage.getItem('so_kf33_checked') || '{}');
+
+function setFilter(f){
+ currentFilter = f;
+ document.querySelectorAll('.filter-btn').forEach(b=>{b.classList.remove('bg-[#D40000]','text-white'); b.classList.add('bg-gray-100')});
+ document.getElementById('f-'+f).classList.add('bg-[#D40000]','text-white');
+ document.getElementById('f-'+f).classList.remove('bg-gray-100');
+ render();
+}
+
+function render(){
+ const search = document.getElementById('search').value.toLowerCase();
+ const container = document.getElementById('list');
+ container.innerHTML = '';
+ let filtered = ITEMS.filter(code=>{
+   if(currentFilter==='ALL') return true;
+   if(currentFilter==='AY') return code.startsWith('AY');
+   if(currentFilter==='DJ') return code.startsWith('DJ');
+   if(currentFilter==='EP') return code.startsWith('EP');
+   if(currentFilter==='FP') return code.startsWith('FP');
+   if(currentFilter==='HB') return code.startsWith('HB');
+   if(currentFilter==='S') return /^S\d/.test(code);
+   if(currentFilter==='LAIN') return !['AY','DJ','EP','FP','HB'].some(x=>code.startsWith(x)) && !/^S\d/.test(code);
+   return true;
+ }).filter(code=>code.toLowerCase().includes(search));
+
+ filtered.forEach(code=>{
+  const isChecked = checked[code];
+  const el = document.createElement('label');
+  el.className = 'flex items-center gap-3 cursor-pointer';
+  el.innerHTML = `
+  <input type="checkbox" class="check hidden" ${isChecked?'checked':''} onchange="toggle('${code}')">
+  <div class="w-full border rounded-xl p-3 flex justify-between items-center bg-white transition-all">
+    <div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center font-black text-[12px]">${code}</div><span class="text-[13px] font-bold">${code}</span></div>
+    <div class="flex items-center gap-2"><span class="text-[10px] status">${isChecked?'SUDAH SO':'BELUM'}</span><div class="dot w-5 h-5 rounded-full border-2 flex items-center justify-center ${isChecked?'opacity-100 bg-white text-[#D40000]':'opacity-0'}"><i class="fa-solid fa-check text-[10px]"></i></div></div>
+  </div>`;
+  container.appendChild(el);
+ });
+ updateProgress();
+}
+
+function toggle(code){
+ checked[code] = !checked[code];
+ if(!checked[code]) delete checked[code];
+ localStorage.setItem('so_kf33_checked', JSON.stringify(checked));
+ render();
+}
+
+function updateProgress(){
+ const total = ITEMS.length;
+ const done = Object.keys(checked).length;
+ document.getElementById('progressText').innerText = `${done} / ${total} DONE`;
+ document.getElementById('persen').innerText = Math.round(done/total*100)+'%';
+ document.getElementById('bar').style.width = (done/total*100)+'%';
+}
+
+function resetAll(){
+ if(confirm('Reset semua ceklist?')){ checked={}; localStorage.removeItem('so_kf33_checked'); render(); }
+}
+
+function saveData(){
+ localStorage.setItem('so_kf33_nama', document.getElementById('nama').value);
+ localStorage.setItem('so_kf33_shift', document.getElementById('shift').value);
+ localStorage.setItem('so_kf33_tanggal', document.getElementById('tanggal').value);
+ alert('Data SO Tersimpan di HP ini bro!');
+}
+
+function exportWA(){
+ const nama = document.getElementById('nama').value || 'STAFF KF33';
+ const shift = document.getElementById('shift').value;
+ const tgl = document.getElementById('tanggal').value || new Date().toLocaleDateString('id-ID');
+ const done = Object.keys(checked);
+ const belum = ITEMS.filter(x=>!checked[x]);
+ let text = `*LAPORAN SO RAWAN HILANG KF33*%0A%0A`;
+ text += `Tanggal: ${tgl}%0AShift: ${shift}%0AStaff: ${nama}%0A%0A`;
+ text += `Sudah SO: ${done.length}/${ITEMS.length} (${Math.round(done.length/ITEMS.length*100)}%)%0A`;
+ text += `Done: ${done.join(', ') || '-'}%0A%0A`;
+ text += `Belum SO: ${belum.join(', ') || 'NIHIL - SEMUA SUDAH SO ✅'}%0A%0A`;
+ text += `_Generated by SO Web KF33_`;
+ window.open(`https://wa.me/?text=${text}`, '_blank');
+}
+
+document.getElementById('tanggal').valueAsDate = new Date();
+document.getElementById('nama').value = localStorage.getItem('so_kf33_nama') || '';
+document.getElementById('shift').value = localStorage.getItem('so_kf33_shift') || 'PAGI';
+render();
+</script>
+</body>
+</html>
