@@ -3,109 +3,165 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>K390 KARBELA 3 - FIX INPUT</title>
+<title>K930 KARBELA 3 - DARK + BANDING BULAN</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script>tailwind.config={darkMode:'class'}</script>
+<style>
+.dark body{background:#0F0F0F}
+</style>
 </head>
-<body class="max-w-[480px] mx-auto bg-[#F7F7F7] min-h-screen pb-32">
+<body class="max-w-[480px] mx-auto bg-[#F7F7F7] dark:bg-[#121212] min-h-screen pb-40 transition-all">
 <div class="bg-[#D40000] text-white p-5 rounded-b-[28px] sticky top-0 z-50">
-<h1 class="font-black text-[20px]">K390 KARBELA 3</h1>
-<p class="text-[10px]">SO RAK + 5 PLU SELISIH TERBESAR - FIX</p>
-<div class="grid grid-cols-3 gap-2 mt-3">
+<div class="flex justify-between items-center">
+<div>
+<h1 class="font-black text-[20px]">K930 KARBELA 3</h1>
+<p class="text-[10px] opacity-80">SO + BANDING BULAN + DARK MODE</p>
+</div>
+<button onclick="toggleDark()" id="darkBtn" class="bg-white/20 w-10 h-10 rounded-full"><i class="fa-solid fa-moon"></i></button>
+</div>
+
+<div class="grid grid-cols-2 gap-2 mt-3">
 <input id="nama" placeholder="Nama Staff" class="rounded-xl p-2.5 text-black text-xs outline-none">
-<select id="shift" class="rounded-xl p-2.5 text-black text-xs"><option>PAGI</option><option>SIANG</option><option>MALAM</option></select>
 <input id="tanggal" type="date" class="rounded-xl p-2.5 text-black text-xs">
 </div>
-<div class="mt-3 flex gap-2 text-[10px] font-bold">
-<div class="flex-1 bg-white/20 rounded-xl p-2 text-center"><p id="done">0/115</p>RAK DONE</div>
-<div class="flex-1 bg-white/20 rounded-xl p-2 text-center"><p id="top5">0</p>PLU TOP5</div>
-<div class="flex-1 bg-white/20 rounded-xl p-2 text-center"><p id="totalMinus">Rp 0</p>TOTAL</div>
+
+<!-- PILIH BULAN -->
+<div class="grid grid-cols-2 gap-2 mt-3">
+<div class="bg-white/20 rounded-xl p-2">
+<p class="text-[9px] font-bold">BULAN INI</p>
+<input id="bulanSekarang" type="month" onchange="gantiBulan()" class="w-full bg-transparent text-xs font-bold outline-none">
+</div>
+<div class="bg-white/20 rounded-xl p-2">
+<p class="text-[9px] font-bold">BANDING BULAN</p>
+<input id="bulanBanding" type="month" onchange="updateBanding()" class="w-full bg-transparent text-xs font-bold outline-none">
 </div>
 </div>
 
-<div class="p-3"><div class="bg-white border rounded-xl flex items-center px-3"><i class="fa-solid fa-search text-xs text-gray-400"></i><input id="search" oninput="render()" placeholder="Cari AT1 AY0..." class="bg-transparent w-full p-3 outline-none text-xs"></div></div>
+<div class="mt-3 grid grid-cols-3 gap-2 text-[10px] font-bold text-center">
+<div class="bg-white/20 rounded-xl p-2"><p id="done">0/115</p><span class="text-[8px]">RAK DONE</span></div>
+<div class="bg-white/20 rounded-xl p-2"><p id="top5">0 PLU</p><span class="text-[8px]">TOP 5</span></div>
+<div class="bg-white/20 rounded-xl p-2"><p id="totalMinus">Rp 0</p><span class="text-[8px]">TOTAL</span></div>
+</div>
+
+<!-- PANEL BANDING -->
+<div id="panelBanding" class="mt-3 bg-black/20 rounded-xl p-3 hidden">
+<p class="text-[10px] font-black">PERBANDINGAN BULAN</p>
+<div class="grid grid-cols-2 gap-2 mt-2 text-[11px]">
+<div><p class="text-[9px] opacity-70">Bulan Ini</p><p id="b1Total" class="font-bold">Rp 0</p><p id="b1Plu" class="text-[9px]">0 PLU</p></div>
+<div><p class="text-[9px] opacity-70">Bulan Banding</p><p id="b2Total" class="font-bold">Rp 0</p><p id="b2Plu" class="text-[9px]">0 PLU</p></div>
+</div>
+<div class="mt-2 pt-2 border-t border-white/20 flex justify-between text-[11px] font-black">
+<span>Selisih:</span><span id="selisihBanding">Rp 0</span>
+</div>
+</div>
+</div>
+
+<div class="p-3 flex gap-2">
+<div class="flex-1 bg-white dark:bg-zinc-800 border dark:border-zinc-700 rounded-xl flex items-center px-3"><i class="fa-solid fa-search text-xs text-gray-400"></i><input id="search" oninput="render()" placeholder="Cari AT1 AY0..." class="bg-transparent w-full p-3 outline-none text-xs dark:text-white"></div>
+<button onclick="render()" class="bg-white dark:bg-zinc-800 border px-3 rounded-xl"><i class="fa-solid fa-rotate text-xs"></i></button>
+</div>
 
 <div id="list" class="p-3 space-y-3"></div>
 
-<div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white border-t p-3 flex gap-2 z-50">
-<button onclick="exportWA()" class="flex-1 bg-[#25D366] text-white py-3 rounded-xl font-bold text-xs">EXPORT K390 WA</button>
+<div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] bg-white dark:bg-zinc-900 border-t dark:border-zinc-800 p-3 flex gap-2 z-50">
+<button onclick="exportWA()" class="flex-1 bg-[#25D366] text-white py-3 rounded-xl font-bold text-xs">EXPORT K930 WA</button>
 <button onclick="save()" class="flex-1 bg-[#D40000] text-white py-3 rounded-xl font-bold text-xs">SIMPAN</button>
 </div>
 
 <script>
 const ITEMS = ["AT1","AY0","AY1","AY2","AY3","AY4","AY5","AY6","AY7","AY8","AY9","AZ1","BA1","BA2","CB1","CF1","CH1","CR1","CR2","CR3","CR4","CX1","CX2","DB1","DD1","DJ1","DJ2","DJ3","DJ4","DJ5","DJ6","EB1","EC1","ED1","EE1","EF1","EJ1","EP1","EP2","EP3","EP4","EP5","FP1","FP2","FP3","FP4","FP5","FP6","FP7","FP8","HB1","HB2","HB3","HB4","HB5","HB6","HB7","HC1","HD1","HG1","HH1","HI1","HM1","HN1","HO1","HS1","HT1","JA1","JC1","KI1","KJ1","KL1","KO1","KS1","MC1","MD1","ME1","MI1","MI2","MI3","NA1","NF1","NP1","OA1","OB1","OB2","OC1","Q31","Q32","Q41","Q51","Q52","Q53","Q54","Q55","QA1","S11","S12","S13","S14","S15","S16","S17","S18"];
-let data = JSON.parse(localStorage.getItem('K390_FIX') || '{}');
+
+let bulanAktif = new Date().toISOString().slice(0,7);
+let dataAll = JSON.parse(localStorage.getItem('K930_KARBELA3_ALL') || '{}'); // {2026-10:{code:{...}}, 2026-11:{...}}
+
+function getDataBulan(bulan){ if(!dataAll[bulan]) dataAll[bulan]={}; return dataAll[bulan]; }
+function getDataAktif(){ return getDataBulan(bulanAktif); }
+
+function gantiBulan(){
+ bulanAktif = document.getElementById('bulanSekarang').value || new Date().toISOString().slice(0,7);
+ render(); updateBanding();
+}
+function toggleDark(){
+ document.documentElement.classList.toggle('dark');
+ localStorage.setItem('K930_DARK', document.documentElement.classList.contains('dark'));
+ document.getElementById('darkBtn').innerHTML = document.documentElement.classList.contains('dark') ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+}
 
 function render(){
  const q = document.getElementById('search').value.toLowerCase();
  const list = document.getElementById('list'); list.innerHTML='';
+ const data = getDataAktif();
  ITEMS.filter(c=>c.toLowerCase().includes(q)).forEach(code=>{
   const d = data[code] || {checked:false, rak:'', nominal:'', items:[]};
   let htmlItems = '';
   if(d.checked){
-   htmlItems = `<div class="p-2 bg-red-50 space-y-2">`;
-   htmlItems+=`<p class="text-[10px] font-black text-red-600">ISI 5 PLU MINUS TERBESAR DI RAK ${code}:</p>`;
+   htmlItems = `<div class="p-2 bg-red-50 dark:bg-red-900/20 space-y-2 rounded-b-xl">`;
    (d.items||[]).forEach((it,i)=>{
-    htmlItems+=`
-    <div class="bg-white border rounded-xl p-2 space-y-1">
+    htmlItems+=`<div class="bg-white dark:bg-zinc-800 border dark:border-zinc-700 rounded-xl p-2 space-y-1">
       <div class="grid grid-cols-12 gap-1">
-        <input id="in-${code}-${i}-plu" value="${it.plu||''}" oninput="uItemNoRender('${code}',${i},'plu',this.value)" placeholder="PLU" class="col-span-3 border rounded p-2 text-[12px] outline-none">
-        <input id="in-${code}-${i}-nama" value="${it.nama||''}" oninput="uItemNoRender('${code}',${i},'nama',this.value)" placeholder="Nama Barang" class="col-span-7 border rounded p-2 text-[12px] outline-none">
+        <input value="${it.plu||''}" oninput="uItem('${code}',${i},'plu',this.value)" placeholder="PLU" class="col-span-3 border rounded p-2 text-[12px] outline-none dark:bg-zinc-900 dark:text-white">
+        <input value="${it.nama||''}" oninput="uItem('${code}',${i},'nama',this.value)" placeholder="Nama Barang" class="col-span-7 border rounded p-2 text-[12px] outline-none dark:bg-zinc-900 dark:text-white">
         <button onclick="dItem('${code}',${i})" class="col-span-2 bg-red-100 text-red-600 rounded"><i class="fa-solid fa-trash text-[11px]"></i></button>
       </div>
       <div class="grid grid-cols-2 gap-1">
-        <input id="in-${code}-${i}-selisih" value="${it.selisih||''}" oninput="uItemNoRender('${code}',${i},'selisih',this.value)" type="number" inputmode="numeric" placeholder="Selisih Rp" class="border rounded p-2 text-[12px] outline-none">
-        <input id="in-${code}-${i}-qty" value="${it.qty||''}" oninput="uItemNoRender('${code}',${i},'qty',this.value)" type="number" inputmode="numeric" placeholder="Qty Minus" class="border rounded p-2 text-[12px] outline-none">
-      </div>
-    </div>`;
+        <input value="${it.selisih||''}" oninput="uItem('${code}',${i},'selisih',this.value)" type="number" inputmode="numeric" placeholder="Selisih Rp" class="border rounded p-2 text-[12px] outline-none dark:bg-zinc-900 dark:text-white">
+        <input value="${it.qty||''}" oninput="uItem('${code}',${i},'qty',this.value)" type="number" inputmode="numeric" placeholder="Qty" class="border rounded p-2 text-[12px] outline-none dark:bg-zinc-900 dark:text-white">
+      </div></div>`;
    });
-   if((d.items||[]).length < 5){
-    htmlItems+=`<button onclick="aItem('${code}')" class="w-full py-3 border-2 border-dashed border-red-300 text-red-600 rounded-xl text-[12px] font-black">+ TAMBAH PLU (${(d.items||[]).length}/5)</button>`;
-   }
+   if((d.items||[]).length < 5) htmlItems+=`<button onclick="aItem('${code}')" class="w-full py-3 border-2 border-dashed border-red-300 text-red-600 rounded-xl text-[11px] font-black">+ TAMBAH PLU (${(d.items||[]).length}/5)</button>`;
    htmlItems+=`</div>`;
   }
   const el = document.createElement('div');
-  el.className = `bg-white rounded-2xl border ${d.checked?'border-[#D40000]':''}`;
-  el.innerHTML = `
-  <label class="flex justify-between items-center p-3">
-    <div class="flex items-center gap-2"><input type="checkbox" ${d.checked?'checked':''} onchange="tog('${code}')" class="w-5 h-5 accent-[#D40000]"><div class="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-black ${d.checked?'bg-[#D40000] text-white':'bg-gray-100'}">${code}</div><b class="text-[13px]">${code}</b></div>
-    <span class="text-[10px]">${d.checked?`Rp${Number(d.nominal||0).toLocaleString('id-ID')} | ${d.rak||'-'}`:'BELUM'}</span>
-  </label>
-  <div class="${d.checked?'':'hidden'} border-t p-3 space-y-2 bg-[#FFF8F8]">
-    <div class="grid grid-cols-2 gap-2">
-      <input value="${d.rak}" oninput="setNoRender('${code}','rak',this.value.toUpperCase())" placeholder="No Rak ex: B-01" class="border rounded-lg p-2.5 text-[13px] outline-none">
-      <input value="${d.nominal}" oninput="setNoRender('${code}','nominal',this.value)" type="number" inputmode="numeric" placeholder="Total Rp Minus" class="border rounded-lg p-2.5 text-[13px] outline-none">
-    </div>
-    ${htmlItems}
-  </div>`;
+  el.className = `bg-white dark:bg-zinc-800 rounded-2xl border dark:border-zinc-700 overflow-hidden ${d.checked?'border-[#D40000]':''}`;
+  el.innerHTML = `<label class="flex justify-between items-center p-3 cursor-pointer"><div class="flex items-center gap-2"><input type="checkbox" ${d.checked?'checked':''} onchange="tog('${code}')" class="w-5 h-5 accent-[#D40000]"><div class="w-8 h-8 rounded-full flex items-center justify-center text-[11px] font-black ${d.checked?'bg-[#D40000] text-white':'bg-gray-100 dark:bg-zinc-700'}">${code}</div><b class="text-[13px] dark:text-white">${code}</b></div><span class="text-[10px] dark:text-gray-300">${d.checked?`Rp${Number(d.nominal||0).toLocaleString('id-ID')} | ${d.rak||'-'}`:'BELUM'}</span></label><div class="${d.checked?'':'hidden'} border-t dark:border-zinc-700 p-3 space-y-2 bg-[#FFF8F8] dark:bg-zinc-900"><div class="grid grid-cols-2 gap-2"><input value="${d.rak}" oninput="set('${code}','rak',this.value.toUpperCase())" placeholder="No Rak" class="border rounded-lg p-2.5 text-[13px] outline-none dark:bg-zinc-800 dark:text-white"><input value="${d.nominal}" oninput="set('${code}','nominal',this.value)" type="number" inputmode="numeric" placeholder="Total Rp" class="border rounded-lg p-2.5 text-[13px] outline-none dark:bg-zinc-800 dark:text-white"></div>${htmlItems}</div>`;
   list.appendChild(el);
  }); upd();
 }
-function tog(c){ if(!data[c]) data[c]={checked:false,rak:'',nominal:'',items:[]}; data[c].checked=!data[c].checked; if(!data[c].checked) delete data[c]; ls(); render(); }
-function setNoRender(c,k,v){ if(!data[c]) data[c]={checked:true,rak:'',nominal:'',items:[]}; data[c][k]=v; ls(); upd(); }
-function uItemNoRender(c,i,k,v){ if(!data[c].items) data[c].items=[]; data[c].items[i][k]=v; ls(); upd(); }
-function aItem(c){ if(!data[c].items) data[c].items=[]; if(data[c].items.length>=5) return; data[c].items.push({plu:'',nama:'',selisih:'',qty:''}); ls(); render(); }
-function dItem(c,i){ data[c].items.splice(i,1); ls(); render(); }
-function ls(){ localStorage.setItem('K390_FIX', JSON.stringify(data)); }
+function tog(c){ let data=getDataAktif(); if(!data[c]) data[c]={checked:false,rak:'',nominal:'',items:[]}; data[c].checked=!data[c].checked; if(!data[c].checked) delete data[c]; ls(); render(); }
+function set(c,k,v){ let data=getDataAktif(); if(!data[c]) data[c]={checked:true,rak:'',nominal:'',items:[]}; data[c][k]=v; ls(); upd(); }
+function uItem(c,i,k,v){ let data=getDataAktif(); data[c].items[i][k]=v; ls(); upd(); }
+function aItem(c){ let data=getDataAktif(); if(!data[c].items) data[c].items=[]; if(data[c].items.length>=5) return; data[c].items.push({plu:'',nama:'',selisih:'',qty:''}); ls(); render(); }
+function dItem(c,i){ let data=getDataAktif(); data[c].items.splice(i,1); ls(); render(); }
+function ls(){ localStorage.setItem('K930_KARBELA3_ALL', JSON.stringify(dataAll)); }
 function upd(){
- const done=Object.values(data).filter(v=>v.checked).length;
- let totalPLU=0,totalRp=0; Object.values(data).forEach(v=>{ totalPLU+=(v.items||[]).length; totalRp+=Number(v.nominal||0); });
- document.getElementById('done').innerText=done+'/'+ITEMS.length;
- document.getElementById('top5').innerText=totalPLU+' PLU';
- document.getElementById('totalMinus').innerText='Rp '+totalRp.toLocaleString('id-ID');
+ let data=getDataAktif(); const done=Object.values(data).filter(v=>v.checked).length; let totalPLU=0,totalRp=0; Object.values(data).forEach(v=>{ totalPLU+=(v.items||[]).length; totalRp+=Number(v.nominal||0); });
+ document.getElementById('done').innerText=done+'/'+ITEMS.length; document.getElementById('top5').innerText=totalPLU+' PLU'; document.getElementById('totalMinus').innerText='Rp '+totalRp.toLocaleString('id-ID');
+ updateBanding();
 }
-function save(){ ls(); alert('Tersimpan K390!'); }
+function updateBanding(){
+ const b1 = document.getElementById('bulanSekarang').value;
+ const b2 = document.getElementById('bulanBanding').value;
+ if(!b2) { document.getElementById('panelBanding').classList.add('hidden'); return; }
+ document.getElementById('panelBanding').classList.remove('hidden');
+ const d1 = getDataBulan(b1); const d2 = getDataBulan(b2);
+ let t1=0,p1=0,t2=0,p2=0;
+ Object.values(d1).forEach(v=>{ t1+=Number(v.nominal||0); p1+=(v.items||[]).length; });
+ Object.values(d2).forEach(v=>{ t2+=Number(v.nominal||0); p2+=(v.items||[]).length; });
+ document.getElementById('b1Total').innerText='Rp '+t1.toLocaleString('id-ID'); document.getElementById('b1Plu').innerText=p1+' PLU minus';
+ document.getElementById('b2Total').innerText='Rp '+t2.toLocaleString('id-ID'); document.getElementById('b2Plu').innerText=p2+' PLU minus';
+ const sel = t1 - t2;
+ document.getElementById('selisihBanding').innerText=(sel>0?'+ Rp ':'Rp ')+sel.toLocaleString('id-ID') + (sel>0?' 🔺 NAIK':' ✅ TURUN');
+}
+function save(){ ls(); alert('Tersimpan K930 '+bulanAktif+'!'); }
 function exportWA(){
- const n=document.getElementById('nama').value||'STAFF'; const sh=document.getElementById('shift').value; const t=document.getElementById('tanggal').value||new Date().toLocaleDateString('id-ID');
- let txt=`*K390 KARBELA 3*%0ATgl: ${t} | ${sh} | ${n}%0A%0A*DETAIL 5 PLU TERBESAR*%0A%0A`;
- Object.entries(data).forEach(([code,v])=>{
-  txt+=`*${code} ${v.rak||''} Rp${Number(v.nominal||0).toLocaleString('id-ID')}*%0A`;
-  (v.items||[]).forEach((it,i)=>{ txt+=`${i+1}. PLU ${it.plu||'-'} ${it.nama||'-'} Qty${it.qty||'-'} Rp${Number(it.selisih||0).toLocaleString('id-ID')}%0A`; });
-  txt+=`%0A`;
- });
+ const n=document.getElementById('nama').value||'STAFF'; const b1=document.getElementById('bulanSekarang').value; const b2=document.getElementById('bulanBanding').value;
+ let txt=`*LAPORAN SO K930 KARBELA 3*%0A%0AToko: K930%0ABulan: ${b1}%0AStaff: ${n}%0A%0A`;
+ const data=getDataAktif();
+ Object.entries(data).forEach(([code,v])=>{ txt+=`*${code} ${v.rak||''} Rp${Number(v.nominal||0).toLocaleString('id-ID')}*%0A`; (v.items||[]).forEach((it,i)=>{ txt+=`${i+1}. PLU ${it.plu||'-'} ${it.nama||'-'} Qty${it.qty||'-'} Rp${Number(it.selisih||0).toLocaleString('id-ID')}%0A`; }); txt+=`%0A`; });
+ if(b2){ const d2=getDataBulan(b2); let t1=0,t2=0; Object.values(data).forEach(v=>t1+=Number(v.nominal||0)); Object.values(d2).forEach(v=>t2+=Number(v.nominal||0)); txt+=`*BANDING ${b1} vs ${b2}: Rp${t1.toLocaleString('id-ID')} vs Rp${t2.toLocaleString('id-ID')} Selisih Rp${(t1-t2).toLocaleString('id-ID')}*%0A`; }
  window.open(`https://wa.me/?text=${txt}`,'_blank');
 }
-document.getElementById('tanggal').valueAsDate=new Date(); render();
+
+// INIT
+const now = new Date().toISOString().slice(0,7);
+const next = new Date(new Date().setMonth(new Date().getMonth()+1)).toISOString().slice(0,7);
+document.getElementById('bulanSekarang').value = now;
+document.getElementById('bulanBanding').value = next;
+bulanAktif = now;
+document.getElementById('tanggal').valueAsDate = new Date();
+if(localStorage.getItem('K930_DARK')==='true'){ document.documentElement.classList.add('dark'); }
+render();
 </script>
 </body>
 </html>
